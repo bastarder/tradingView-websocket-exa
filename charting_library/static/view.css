@@ -1,0 +1,9 @@
+
+.chart-page.on-widget{
+  background: transparent;
+}
+
+/* .pane-legend-line.pane-legend-wrap.study, */
+.chart-controls-clock,.chart-controls-tz{
+	display: none;
+}
