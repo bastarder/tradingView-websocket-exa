@@ -1,4 +1,22 @@
-var defaultConfig = {
+var ajax: any = {
+  get: function (url, fn, fnf) {
+    var obj = new XMLHttpRequest();
+    obj.open('GET', url, true);
+    obj.onreadystatechange = function () {
+      if (obj.readyState == 4 && obj.status == 200 || obj.status == 304) {
+        fn.call(this, JSON.parse(obj.responseText));
+      } else if (obj.readyState == 4) {
+        fnf.call(this, { data: '服务端错误!' })
+      }
+    };
+    obj.onerror = function () {
+      fnf.call(this, { data: '服务端错误!' })
+    }
+    obj.send(null);
+  }
+}
+
+var defaultConfig: any = {
   supports_search: false,
   supports_time: true,
   supports_timescale_marks: false,
@@ -7,7 +25,7 @@ var defaultConfig = {
   supported_resolutions: ['1', '5', '15', '60', '240', '1440', '10080', '43200'],
 };
 
-var defaultSymbolResolve = {
+var defaultSymbolResolve: any = {
   name: 'BTC/USDT',
   timezone: 'Asia/Shanghai',
   minmov: 1,
@@ -26,13 +44,14 @@ var defaultSymbolResolve = {
   ticker: 'BTC/USDT',
 };
 
-var api = {
-  getServerTime: '/api/market/time',
+var api: any = {
+  getServerTime: '/time',
   getMarks: '/marks',
-  resolveSymbol: '/api/market/trading_pairs',
+  resolveSymbol: '/trading_pairs',
+  getHistory: '/get_bars',
 }
 
-var timeMap = {
+var timeMap: any = {
   '1': '1m',
   '5': '5m',
   '15': '15m',
@@ -43,8 +62,7 @@ var timeMap = {
   '43200': '1M',
 }
 
-var Datafeeds = {};
-var oldUnsubscribeBarsName = null;
+var Datafeeds: any = {};
 
 Datafeeds.UDFCompatibleDatafeed = function (datafeedURL, updateFrequency, protocolVersion, app) {
   var that = this;
@@ -52,7 +70,7 @@ Datafeeds.UDFCompatibleDatafeed = function (datafeedURL, updateFrequency, protoc
   this._app = app;
   this._configuration = defaultConfig;
   this._ws = null;
-  this._barsPulseUpdater = new Datafeeds.DataPulseUpdater(this, updateFrequency || 1000 * 10);
+  this.onRealtimeCallback = () => {};
   this._protocolVersion = protocolVersion || 2;
 
   this._app._closeCurrentKline = function(){
@@ -63,75 +81,64 @@ Datafeeds.UDFCompatibleDatafeed = function (datafeedURL, updateFrequency, protoc
 
 Datafeeds.UDFCompatibleDatafeed.prototype.getServerTime = function (callback) {
   if (this._configuration.supports_time) {
-    this._send(api.getServerTime, {})
-      .then(function (response) {
-        callback(+response);
-      })
-      .catch(function () { });
+    this._send(api.getServerTime, {}, function (response) {
+      callback(+response);
+    })
   }
 };
 
 Datafeeds.UDFCompatibleDatafeed.prototype.onReady = function (callback) {
+  var that = this;
 
-  if (!this._configuration.exchanges) {
-    this._configuration.exchanges = [];
-  }
-
-  this._logMessage(`Initialized with ${JSON.stringify(this._configuration)}`);
-
-  callback(this._configuration);
+  setTimeout(() => {
+    if (!that._configuration.exchanges) {
+      that._configuration.exchanges = [];
+    }
+    callback(that._configuration);
+  }, 0);
 };
 
 Datafeeds.UDFCompatibleDatafeed.prototype.resolveSymbol = function (symbolName, onSymbolResolvedCallback, onResolveErrorCallback) {
-  var that = this;
   this._send(api.resolveSymbol, {
-    symbol: symbolName ? symbolName.toUpperCase() : ""
-  })
-    .then(function (response) {
-      var data = response.result || {};
-      if (!data.can_trading) {
-        onResolveErrorCallback("unknown_symbol");
-      }
-      else {
-        defaultSymbolResolve.name = data.name;
-        defaultSymbolResolve.ticker = data.name;
-        defaultSymbolResolve.pricescale = Math.pow(10, parseInt(data.quote_decimal));
-        defaultSymbolResolve.base_name = [data.name];
-        defaultSymbolResolve.legs = [data.name];
-        defaultSymbolResolve.full_name = data.name;
-        defaultSymbolResolve.pro_name = data.name;
-        onSymbolResolvedCallback(defaultSymbolResolve);
-      }
-    })
-    .catch(function (reason) {
-      that._logMessage("Error resolving symbol: " + JSON.stringify([reason]));
+    pair: symbolName ? symbolName.toUpperCase() : ""
+  },
+    function (res) {
+      defaultSymbolResolve.name = symbolName;
+      defaultSymbolResolve.ticker = symbolName;
+      defaultSymbolResolve.pricescale = Math.pow(10, res.base_decimal || 4);
+      defaultSymbolResolve.base_name = [symbolName];
+      defaultSymbolResolve.legs = [symbolName];
+      defaultSymbolResolve.full_name = symbolName;
+      defaultSymbolResolve.pro_name = symbolName;
+      onSymbolResolvedCallback(defaultSymbolResolve);
+    },
+    function (reason) {
       onResolveErrorCallback("unknown_symbol");
-    });
-
+    }
+  )
 };
 
 Datafeeds.UDFCompatibleDatafeed.prototype.getBarsDataFormat = function(res){
-  var res = {
-    key: res[0],
-    type: res[1],
-    state: res[2],
-    data: res[3] || [],
+  var res: any = {
+    key: res.subject,
+    type: res.type,
+    state: res.status,
+    data: res.data || [],
   }
 
   if (!res.data.length) return null;
 
   // | 首次历史数据 i | 更新 u |
-
   if(res.type === 'u'){
     res.data = [res.data];
   }
 
-  var data = res.data;
-  var dt = { s: 'ok', t: [], c: [], o: [], h: [], l: [], v: [] };
+  var data: any = res.data;
+  var dt: any = { s: 'ok', t: [], c: [], o: [], h: [], l: [], v: [] };
 
   // 格式化数据
   for (var i = 0; i < data.length; i++) {
-    dt.t.push(parseInt(parseInt(data[i][0]) / 1000));
+    dt.t.push(parseInt((data[i][0] / 1000).toString()))
     dt.o.push(parseFloat(data[i][1]))
     dt.h.push(parseFloat(data[i][2]))
     dt.l.push(parseFloat(data[i][3]))
@@ -146,7 +153,7 @@ Datafeeds.UDFCompatibleDatafeed.prototype.getBarsDataFormat = function(res){
   var ohlPresent = typeof dt.o !== 'undefined';
 
   for (var i = 0; i < barsCount; ++i) {
-    var barValue = {
+    var barValue: any = {
       time: dt.t[i] * 1000,
       close: dt.c[i],
     };
@@ -167,48 +174,89 @@ Datafeeds.UDFCompatibleDatafeed.prototype.getBarsDataFormat = function(res){
 
   var meta = { version: this._protocolVersion, noData: false, nextTime: dt.nb || dt.nextTime };
 
+  bars = bars.sort(function(a,b){
+    return a.time - b.time
+  })
+
   return {
-    bars : bars, 
-    meta : meta
+    bars : bars,
+    meta : meta,
+    isFirst: res.type === 'i',
   }
 }
 
 Datafeeds.UDFCompatibleDatafeed.prototype.getBars = function (symbolInfo, resolution, rangeStartDate, rangeEndDate, onDataCallback, onErrorCallback, flag) {
   var that = this;
 
-  // 退订旧监听;
-  var unsubscribeBarsName = symbolInfo.name + '_' + resolution;
+  // that.cacheBars && console.warn(that.cacheBars[0].time)
+  // 缓存中的第一个数据的时间 用于获取历史记录;
 
-  if (unsubscribeBarsName != oldUnsubscribeBarsName) {
-    that._barsPulseUpdater.unsubscribeDataListener(oldUnsubscribeBarsName);
-    oldUnsubscribeBarsName = unsubscribeBarsName;
-  }
+  // console.warn(`Get Bars: ====> ${resolution},
+  //   first: ${flag},
+  //   from: ${new Date(rangeStartDate)},
+  //   to: ${new Date(rangeEndDate)}
+  // `)
 
   if(!flag){
-    return onDataCallback(that.cacheBars || [],{ noData: true })
+    try {
+      that._send(api.getHistory, {
+        pair: symbolInfo.name,
+        limit: 1000,
+        end: that.cacheBars[0].time,
+        period: timeMap[resolution],
+      }, function(res) {
+        var options = that.getBarsDataFormat(res);
+        var bars = options && options.bars || [];
+        that.cacheBars = that.cacheBars.concat(bars)
+        that.cacheBars = that.cacheBars.sort(function(a,b){
+          return a.time - b.time;
+        })
+        // console.warn(`Get History: ====>`, bars);
+        onDataCallback(bars, { noData: !bars.length });
+      }, function() {
+        onDataCallback([], { noData: true });
+      })
+    } catch (error) {
+      onDataCallback([], { noData: true });
+    }
+    return ;
   }
 
   var oldWs = this._ws;
   this._ws && this._ws.delete();
 
   var rssParam = {
+    service: "market",
     type: 'kline',
-    name: symbolInfo.name,
+    pair: symbolInfo.name.toLowerCase(),
     period: timeMap[resolution],
   }
+
+  // console.log('rssParam:', rssParam)
 
   this._ws = this._app.add(rssParam, function(data) {
     var options = that.getBarsDataFormat(data);
 
-    if(!options || !flag) return ;
-
-    // 打开这可以修复 左滑到尽头 历史数据丢失问题，但是非常占用资源
-    // 问题是由于 TradingView 的period 时间，文档上说数字 代表分钟，但事实上，1却代表了1天，导致 1天以上的数据 会发送多次请求，导致数据分段显示，会造成无限加载上一段数据。
-    if(options.bars.length > 1){
-      that.cacheBars = options.bars;
+    if(!options) {
+      return;
     }
 
-    onDataCallback(options.bars, options.meta);
+    if(options.isFirst){
+      // websocket 返回初始数据
+      that.cacheBars = options.bars;
+      onDataCallback(options.bars, options.meta);
+    }else{
+      // websocket 更新数据
+      var lastIndex = that.cacheBars.length - 1;
+      var lastBar = that.cacheBars[lastIndex];
+      if(lastBar.time === options.bars[0].time){
+        that.cacheBars[lastIndex] = options.bars[0];
+      }else{
+        that.cacheBars.push(options.bars[0]);
+      }
+      that.onRealtimeCallback(options.bars[0])
+    }
+
   });
 
   // 如果切换新参数则 删除旧的Websocket监听事件;
@@ -218,14 +266,14 @@ Datafeeds.UDFCompatibleDatafeed.prototype.getBars = function (symbolInfo, resolu
 };
 
 Datafeeds.UDFCompatibleDatafeed.prototype.subscribeBars = function (symbolInfo, resolution, onRealtimeCallback, listenerGUID, onResetCacheNeededCallback) {
-  this._barsPulseUpdater.subscribeDataListener(symbolInfo, resolution, onRealtimeCallback, listenerGUID, onResetCacheNeededCallback);
+  this.onRealtimeCallback = onRealtimeCallback
 };
 
-Datafeeds.UDFCompatibleDatafeed.prototype.unsubscribeBars = function (listenerGUID) {
-  this._barsPulseUpdater.unsubscribeDataListener(listenerGUID);
+Datafeeds.UDFCompatibleDatafeed.prototype.unsubscribeBars = function () {
+  this.onRealtimeCallback = () => {}
 };
 
-Datafeeds.UDFCompatibleDatafeed.prototype._send = function (urlPath, params) {
+Datafeeds.UDFCompatibleDatafeed.prototype._send = function (urlPath, params, cb, ecb) {
   if (params !== undefined) {
     var paramKeys = Object.keys(params);
     if (paramKeys.length !== 0) {
@@ -236,106 +284,10 @@ Datafeeds.UDFCompatibleDatafeed.prototype._send = function (urlPath, params) {
     }).join('&');
   }
 
-  this._logMessage('New request: ' + urlPath);
+  var cb = cb || function() {};
+  var ecb = ecb || function() {};
 
-  return fetch(this._datafeedURL + "/" + urlPath)
-    .then(function (response) { return response.text(); })
-    .then(function (responseTest) { return JSON.parse(responseTest); });
+  return ajax.get(this._datafeedURL + urlPath, cb, ecb)
 };
 
-Datafeeds.UDFCompatibleDatafeed.prototype._logMessage = function (message) {
-  // console.log("[TradingView]: " + message);
-};
-
-Datafeeds.DataPulseUpdater = function (datafeed, updateFrequency) {
-
-  this._datafeed = datafeed;
-  this._subscribers = {};
-
-  this._requestsPending = 0;
-  var that = this;
-
-  var update = function () {
-    if (that._requestsPending > 0) {
-      return;
-    }
-    
-    for (var listenerGUID in that._subscribers) {
-      var subscriptionRecord = that._subscribers[listenerGUID];
-      var resolution = subscriptionRecord.resolution;
-      var datesRangeRight = parseInt((new Date().valueOf()) / 1000);
-      var datesRangeLeft = datesRangeRight - that.periodLengthSeconds(resolution, 10);
-
-      that._requestsPending++;
-
-      (function (_subscriptionRecord) {
-        that._datafeed.getBars(_subscriptionRecord.symbolInfo, resolution, datesRangeLeft, datesRangeRight, function (bars) {
-          that._requestsPending--;
-          if (!that._subscribers.hasOwnProperty(listenerGUID)) {
-            return;
-          }
-
-          if (bars.length === 0) {
-            return;
-          }
-
-          var lastBar = bars[bars.length - 1];
-          if (!isNaN(_subscriptionRecord.lastBarTime) && lastBar.time < _subscriptionRecord.lastBarTime) {
-            return;
-          }
-
-          var subscribers = _subscriptionRecord.listeners;
-
-          _subscriptionRecord.lastBarTime = lastBar.time;
-
-          for (var i = 0; i < subscribers.length; ++i) {
-            subscribers[i](lastBar);
-          }
-        },
-        function (){
-          that._requestsPending--;
-        }, 'Interval')
-      }(subscriptionRecord));
-    }
-  };
-
-  if (typeof updateFrequency !== 'undefined' && updateFrequency > 0) {
-    this._datafeed._intervalTimer = setInterval(update, updateFrequency);
-  }
-};
-
-Datafeeds.DataPulseUpdater.prototype.unsubscribeDataListener = function (listenerGUID) {
-  this._datafeed._logMessage(`Unsubscribing ${listenerGUID}`);
-  delete this._subscribers[listenerGUID];
-};
-
-Datafeeds.DataPulseUpdater.prototype.subscribeDataListener = function (symbolInfo, resolution, newDataCallback, listenerGUID) {
-  this._datafeed._logMessage(`Subscribing ${listenerGUID}`);
-  if (!this._subscribers.hasOwnProperty(listenerGUID)) {
-    this._subscribers[listenerGUID] = {
-      symbolInfo,
-      resolution,
-      lastBarTime: NaN,
-      listeners: [],
-    };
-  }
-  this._subscribers[listenerGUID].listeners.push(newDataCallback);
-};
-
-Datafeeds.DataPulseUpdater.prototype.periodLengthSeconds = function (resolution, requiredPeriodsCount) {
-  var daysCount = 0;
-  
-  if (resolution == 'D') {
-    daysCount = requiredPeriodsCount;
-  } else if (resolution == 'M') {
-    daysCount = 31 * requiredPeriodsCount;
-  } else if (resolution == 'W') {
-    daysCount = 7 * requiredPeriodsCount;
-  } else {
-    daysCount = requiredPeriodsCount * resolution / (24 * 60);
-  }
-
-  return daysCount * 24 * 60 * 60;
-};
-
-window.Datafeeds = Datafeeds;
+export default Datafeeds;

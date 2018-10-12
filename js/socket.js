@@ -1,6 +1,5 @@
 /**
  * 1. 因为可能安卓 IOS 需要在手机端内嵌Web使用，所以采用兼容性较强的写法，没使用ES6。
- * 2. 重连未测试。
  */
 
 function WebSocketClient(opt, cbOption){
@@ -17,13 +16,13 @@ function WebSocketClient(opt, cbOption){
   this.reconnectTimer = setInterval(function(){
     if(!that._ws || that._ws.readyState !== 1){
       console.warn('正在重连!');
-      that.init();
+      that.init(true);
     }
   }, 15000)
-  
+
 }
 
-WebSocketClient.prototype.init = function() {
+WebSocketClient.prototype.init = function(reload) {
   var that = this;
   var opt = this._opt;
   var cbOption = this._cbOption;
@@ -31,25 +30,27 @@ WebSocketClient.prototype.init = function() {
   this._ws = new WebSocket(opt.socketUrl);
 
   this._ws.onopen = function() {
-    console.log(that._ws)
     cbOption.onopen && cbOption.onopen();
+
+    if(reload){
+      for(var key in that._cb){
+        that.send(that._listener[key].sendKey)
+      }
+    }
+
     that._waitEventList = that._waitEventList.filter(function(key){
-      that._ws.send(key)
+      !that._cb[key] && that.send(key)
       return false;
     })
-    for(var key in that._cb){
-      that._ws.send(key)
-    }
   }
 
   this._ws.onmessage = function(event) {
     cbOption.onmessage && cbOption.onmessage(event);
-    
+
     try {
       var res = JSON.parse(event.data);
-      var eventKey = res[0];
-      console.log('GET MESSAGE:', eventKey, event.data);
-      
+      var eventKey = that.handleKey(res.subject);
+
       if(that._cb[eventKey] && that._cb[eventKey].length > 0){
         for(var i=0; i < that._cb[eventKey].length; i++){
           that._cb[eventKey][i](res);
@@ -67,7 +68,7 @@ WebSocketClient.prototype.send = function(key) {
   if(!this._ws || this._ws.readyState !== 1){
     this._waitEventList.push(key);
   }else{
-    this._ws.send(key)
+    this._ws.send(JSON.stringify(key))
   }
 }
 
@@ -78,16 +79,15 @@ WebSocketClient.prototype.add = function(param, cb){
   if(!key){
     return false;
   }
-  
-  var sendKey = 'sub.' + key;
-  var unKey = 'uns.' + key;
 
-  if(this._cb[sendKey]){
-    this._cb[sendKey].push(cb);
+  var sendKey = { ...param, model: 'sub' };
+  var unKey = { ...param, model: 'uns' };
+
+  if(this._cb[key]){
+    this._cb[key].push(cb);
   } else {
-    console.log('send:', sendKey)
     this.send(sendKey);
-    this._cb[sendKey] = [cb];
+    this._cb[key] = [cb];
   }
 
   var listener = {
@@ -96,21 +96,20 @@ WebSocketClient.prototype.add = function(param, cb){
     addTime: new Date(),
     sendKey: sendKey,
     delete: function() {
-      if(!that._cb[sendKey]){
+      if(!that._cb[key]){
         return ;
       }
-      that._cb[sendKey] = that._cb[sendKey].filter(function(item){
+      that._cb[key] = that._cb[key].filter(function(item){
         return item !== cb;
       })
     },
     close: function() {
-      console.log('un:', unKey)
-      delete that._cb[sendKey]
+      delete that._cb[key]
       that.send(unKey);
     }
   }
 
-  this._listener.push(listener);
+  this._listener[key] = listener;
 
   return listener;
 }
@@ -121,13 +120,28 @@ WebSocketClient.prototype.close = function() {
 }
 
 WebSocketClient.prototype.handleKey = function(param) {
-  var type = param.type;
-  if(type = 'kline'){
-    if(!param.name || !param.period){
+  var type = param && param.type;
+
+  if(type === 'kline'){
+    if(!param.pair || !param.period){
       return false
     }
-    return 'market.' + param.name + '.kline|{"period":"' + param.period + '"}';
+    return param.service + '.' + param.pair + '.kline|{"period":"' + param.period + '"}';
   }
+
+  if(type === 'ticker'){
+    return 'market.all.ticker'
+  }
+
+  if(type === 'trade'){
+    if(!param.pair){
+      return false
+    }
+    return 'market.'+ param.pair + '.trade';
+  }
+
+  return false
+
 }
 
-window.WebSocketClient = WebSocketClient;
+export default WebSocketClient;

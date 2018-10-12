@@ -1,10 +1,12 @@
+var rss = null;
+var widget = null;
+var _symbol = 'BTC_USDT';
+var _language = 'en';
+var _datafeedUrl = 'https://www.exa.center';
+var _resolution = '5';
+
 
 window.onload = function(){
-  var rss = null;
-  var _symbol = 'BTC_USDT';
-  var _language = 'en';
-  var _datafeedUrl = 'https://www.exa.center';
-  var _resolution = '5';
 
   rss = new WebSocketClient({
     socketUrl: "wss://ws.btcexa.com/api/market/ws",
@@ -15,7 +17,7 @@ window.onload = function(){
   })
 
   function initChart(){
-    var widget = new TradingView.widget({
+    widget = new TradingView.widget({
       preset: "mobile",
       container_id: 'tv_chart_container',
       library_path: './charting_library/',
@@ -60,6 +62,9 @@ window.onload = function(){
   }
 }
 
-
-
+function testFunc(text){
+  var test_block = document.getElementById('test_block');
+  test_block.innerHTML = text;
+  console.log(rss, widget)
+}
 
