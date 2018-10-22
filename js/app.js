@@ -96,6 +96,20 @@ function setChartType(chartType){
   }
 }
 
+function createStudy(){
+  if(!widget || !widget.chart()){
+    return false
+  }
+  return widget.chart().createStudy.apply(widget.chart(), arguments)
+}
+
+function removeStudy(id){
+  if(!widget || !widget.chart()){
+    return false
+  }
+  return widget.chart().removeEntity(id);
+}
+
 window.onerror = function(err) {
   console.warn('Error:', err)
 }

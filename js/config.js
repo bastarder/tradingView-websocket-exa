@@ -3,6 +3,7 @@ var light = {
   container_id: 'tv_chart_container',
   library_path: './charting_library/',
   disabled_features: [
+    'widget_logo',
     'header_chart_type',
     'use_localstorage_for_settings',
     'left_toolbar',
