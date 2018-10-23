@@ -70,3 +70,12 @@ createStudy(name, forceOverlay, lock, inputs, callback, overrides, options): str
 removeStudy(id): boolean;
 创建指标时会返回指标的唯一标识(string);
 ```
+
+### 获取当前已存在的指标列表
+```
+getAllStudies(): [];
+返回示例: [
+  {id: "QKqW9B", name: "Volume"},
+  {id: "bzJSHX", name: "MACD"},
+]
+```

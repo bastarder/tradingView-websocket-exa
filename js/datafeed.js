@@ -17,6 +17,7 @@ var timeMap = {
     '1': '1m',
     '5': '5m',
     '15': '15m',
+    '30': '30m',
     '60': '1h',
     '240': '4h',
     '1440': '1D',
@@ -45,7 +46,7 @@ var Datafeeds = (function () {
             supports_time: true,
             supports_timescale_marks: false,
             supports_marks: false,
-            supported_resolutions: ['1', '5', '15', '60', '240', '1440', '10080', '43200'],
+            supported_resolutions: ['1', '5', '15', '30', '60', '240', '1440', '10080', '43200'],
             exchanges: [],
         }); }, 0);
     };
@@ -66,7 +67,7 @@ var Datafeeds = (function () {
             has_weekly_and_monthly: false,
             description: '',
             type: 'stock',
-            supported_resolutions: ['1', '5', '15', '60', '240', '1440', '10080', '43200'],
+            supported_resolutions: ['1', '5', '15', '30', '60', '240', '1440', '10080', '43200'],
             pricescale: 10000,
             ticker: trading_pair,
         }); }, 0);
@@ -190,4 +191,3 @@ var Datafeeds = (function () {
     };
     return Datafeeds;
 }());
-

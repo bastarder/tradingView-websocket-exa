@@ -110,6 +110,17 @@ function removeStudy(id){
   return widget.chart().removeEntity(id);
 }
 
+function getAllStudies(){
+  if(!widget || !widget.chart()){
+    return false
+  }
+  return widget.chart().getAllStudies()
+}
+
+function testConsole(t){
+  return t;
+}
+
 window.onerror = function(err) {
   console.warn('Error:', err)
 }

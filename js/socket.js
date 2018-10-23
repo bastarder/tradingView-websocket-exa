@@ -10,7 +10,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
 var WebSocketClient = (function () {
     function WebSocketClient(opt, cbOption) {
         var _this = this;
@@ -58,6 +57,9 @@ var WebSocketClient = (function () {
         var type = data.type, _a = data.service, service = _a === void 0 ? "@" : _a, _b = data.pair, pair = _b === void 0 ? "$" : _b, _c = data.period, period = _c === void 0 ? "#" : _c, _d = data.limit, limit = _d === void 0 ? "*" : _d;
         if (!type || !~WebSocketClient.supportEventType.indexOf(type))
             return false;
+        if (type === 'ticker') {
+            pair = 'all';
+        }
         return service + "." + type + "." + pair + "." + period + "." + limit;
     };
     WebSocketClient.prototype.close = function () {
@@ -100,4 +102,3 @@ var WebSocketClient = (function () {
     WebSocketClient.supportEventType = ['kline', 'ticker', 'trade', 'depth'];
     return WebSocketClient;
 }());
-
