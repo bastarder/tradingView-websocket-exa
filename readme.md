@@ -79,3 +79,12 @@ getAllStudies(): [];
   {id: "bzJSHX", name: "MACD"},
 ]
 ```
+
+## 智能创建指标方法
+```
+createStudyAuto(studyName, type)
+type: 主指标: 'first' 副指标: 'second';
+studyName 传 空字符串("")时, 将影藏所有 指定类型（主或副）的指标;
+例1: createStudyAuto('Relative Strength Index', 'second');
+例2: createStudyAuto('', 'first') //隐藏所有主指标;
+```

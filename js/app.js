@@ -51,8 +51,8 @@ function initChart(){
     config.datafeed = new Datafeeds(_datafeedUrl, rss)
 
     widget = new TradingView.widget(config)
-
-    widget.onChartReady(() => {
+    widget.onChartReady(function(){
+      createStudyAuto('Moving Average', 'first')
       widget.chart().onDataLoaded().subscribe(null, function(){
         loading = false;
       })
@@ -101,6 +101,24 @@ function createStudy(){
     return false
   }
   return widget.chart().createStudy.apply(widget.chart(), arguments)
+}
+
+function createStudyAuto(key, type){
+  var studiesMap = {
+    first: ['Moving Average', 'Bollinger Bands'],
+    second: ['MACD', 'Stochastic', 'Relative Strength Index', 'Williams %R']
+  }
+
+  var studies = studiesMap[type];
+  var current_studies = getAllStudies();
+
+  current_studies.forEach(function(study){
+    if(~studies.indexOf(study.name)){
+      removeStudy(study.id);
+    }
+  });
+
+  key && createStudy(key);
 }
 
 function removeStudy(id){
