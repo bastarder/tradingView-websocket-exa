@@ -11,12 +11,10 @@
 例: cd trading-view-example && python3 -m http.server
 
 ```
-
-
 ### 初始化图表方法（只需执行一次）
 ```
-startChart（baseUrl?: string , symbol?: string , language?: string , resolution?: string , theme? : string）:void;
-例:  startChart("192.168.21.135:8081", 'btc_usdt', 'en', '1440', 'dark')
+startChart（baseUrl?: string , symbol?: string , language?: string , resolution?: string , theme? : string, chartType?: string）:void;
+例:  startChart("192.168.21.135:8081", 'BTC_USDT', 'en', '5', 'light', '1')
 ```
 
 ### 强制刷新图表（一般无需调用）
@@ -47,6 +45,7 @@ setResolution(resolution: string): boolean;
 '1': '1m',
 '5': '5m',
 '15': '15m',
+'30': '30m',
 '60': '1h',
 '240': '4h',
 '1440': '1D',

@@ -7,8 +7,9 @@ var _language = 'en';
 var _datafeedUrl = 'http://' + _baseUrl + '/v1';
 var _resolution = '5';
 var _theme = 'light';
+var _chartType = '1';
 var initTimer = null;
-var loading = false;
+var loading = true;
 var pageInitFinish = false;
 var waitInitTimer = null;
 
@@ -16,12 +17,13 @@ window.onload = function(){
   pageInitFinish = true;
 }
 
-function startChart(baseUrl, symbol, language, resolution, theme){
+function startChart(baseUrl, symbol, language, resolution, theme, chartType){
   _baseUrl = baseUrl || _baseUrl;
   _symbol = symbol || _symbol;
   _language = language || _language;
   _resolution = resolution || _resolution;
   _theme = theme || _theme;
+  _chartType = chartType || _chartType;
 
   waitInitTimer = setInterval(function(){
     if(!pageInitFinish) return ;
@@ -52,7 +54,8 @@ function initChart(){
 
     widget = new TradingView.widget(config)
     widget.onChartReady(function(){
-      createStudyAuto('Moving Average', 'first')
+      createStudyAuto('Moving Average', 'first');
+      setChartType(_chartType);
       widget.chart().onDataLoaded().subscribe(null, function(){
         loading = false;
       })
@@ -92,7 +95,7 @@ function setResolution(interval){
 function setChartType(chartType){
   if(widget){
     setResolution('1');
-    widget.chart().setChartType(chartType);
+    widget.chart().setChartType(Number(chartType));
   }
 }
 
@@ -109,8 +112,8 @@ function createStudyAuto(key, type){
     second: ['MACD', 'Stochastic', 'Relative Strength Index', 'Williams %R']
   }
 
-  var studies = studiesMap[type];
-  var current_studies = getAllStudies();
+  var studies = studiesMap[type] || [];
+  var current_studies = getAllStudies() || [];
 
   current_studies.forEach(function(study){
     if(~studies.indexOf(study.name)){
