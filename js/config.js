@@ -20,15 +20,21 @@ var light = {
   autosize: true,
   custom_css_url: './view.css',
   overrides: {
+    'mainSeriesProperties.minTick': "100/1",
     'paneProperties.background': "#FFFFFF",
-    'scalesProperties.textColor': "#e6e6e6",
-    'mainSeriesProperties.barStyle.upColor': "#00CE7D", //蜡烛图颜色-绿
-    'mainSeriesProperties.barStyle.downColor': "#E55541",//蜡烛图颜色-红
+    'mainSeriesProperties.barStyle.upColor': "#15CC89", //蜡烛图颜色-绿
+    'mainSeriesProperties.barStyle.downColor': "#FF5B7D",//蜡烛图颜色-红
+    'mainSeriesProperties.candleStyle.wickUpColor': "#15CC89",
+    'mainSeriesProperties.candleStyle.wickDownColor': "#FF5B7D",
+    'paneProperties.vertGridProperties.color': "transparent",
+    'paneProperties.horzGridProperties.color': "#EDF1F4",
+    'scalesProperties.textColor': "#C4D0D7",
+    'scalesProperties.lineColor': "#EDF1F4",
   },
   studies_overrides: { //布林柱状图颜色
-    "volume.precision": 4,
-    "volume.volume.color.1": "#00ce7d", //绿
-    "volume.volume.color.0": "#e55541",//红
+    "volume.precision": 2,
+    "volume.volume.color.1": "#15CC89", //绿
+    "volume.volume.color.0": "#FF5B7D",//红
   },
   time_frames: [],
 }
@@ -55,13 +61,19 @@ var dark = {
   autosize: true,
   custom_css_url: './view.css',
   overrides: {
-    'paneProperties.background': "#000000",
-    'scalesProperties.textColor': "#FFFFFF",
-    'mainSeriesProperties.barStyle.upColor': "#00CE7D", //蜡烛图颜色-绿
-    'mainSeriesProperties.barStyle.downColor': "#E55541",//蜡烛图颜色-红
+    'mainSeriesProperties.minTick': "100/1",
+    'paneProperties.background': "#1E2C3B",
+    'mainSeriesProperties.barStyle.upColor': "#15CC89", //蜡烛图颜色-绿
+    'mainSeriesProperties.barStyle.downColor': "#FF5B7D",//蜡烛图颜色-红
+    'mainSeriesProperties.candleStyle.wickUpColor': "#15CC89",
+    'mainSeriesProperties.candleStyle.wickDownColor': "#FF5B7D",
+    'paneProperties.vertGridProperties.color': "transparent",
+    'paneProperties.horzGridProperties.color': "#394D66",
+    'scalesProperties.textColor': "#627180",
+    'scalesProperties.lineColor': "#394D66",
   },
   studies_overrides: { //布林柱状图颜色
-    "volume.precision": 4,
+    "volume.precision": 2,
     "volume.volume.color.1": "#00ce7d", //绿
     "volume.volume.color.0": "#e55541",//红
   },

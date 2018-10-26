@@ -15,6 +15,7 @@ var waitInitTimer = null;
 
 window.onload = function(){
   pageInitFinish = true;
+  // startChart();
 }
 
 function startChart(baseUrl, symbol, language, resolution, theme, chartType){

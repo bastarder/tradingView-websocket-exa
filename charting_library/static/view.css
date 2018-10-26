@@ -7,3 +7,15 @@
 .chart-controls-clock,.chart-controls-tz{
 	display: none;
 }
+
+.chart-page .chart-container{
+  border: none;
+}
+
+.pane-legend{
+  display: none;
+}
+
+.pane-controls{
+  display: none;
+}
