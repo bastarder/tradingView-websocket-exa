@@ -6,7 +6,7 @@ var _symbol = 'BTC_USDT';
 var _language = 'en';
 var _datafeedUrl = 'http://' + _baseUrl + '/v1';
 var _resolution = '5';
-var _theme = 'light';
+var _theme = 'dark';
 var _chartType = '1';
 var initTimer = null;
 var loading = true;
@@ -15,7 +15,7 @@ var waitInitTimer = null;
 
 window.onload = function(){
   pageInitFinish = true;
-  // startChart();
+  // startChart('10.0.2.116:8081');
 }
 
 function startChart(baseUrl, symbol, language, resolution, theme, chartType){
@@ -25,6 +25,7 @@ function startChart(baseUrl, symbol, language, resolution, theme, chartType){
   _resolution = resolution || _resolution;
   _theme = theme || _theme;
   _chartType = chartType || _chartType;
+  document.body.className = _theme;
 
   waitInitTimer = setInterval(function(){
     if(!pageInitFinish) return ;
@@ -66,6 +67,7 @@ function initChart(){
 
 function setTheme(theme){
   _theme = theme;
+  document.body.className = _theme;
   initChart();
 }
 
@@ -137,10 +139,6 @@ function getAllStudies(){
     return false
   }
   return widget.chart().getAllStudies()
-}
-
-function testConsole(t){
-  return t;
 }
 
 window.onerror = function(err) {

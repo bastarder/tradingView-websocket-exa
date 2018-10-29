@@ -18,7 +18,10 @@ var light = {
   user_id: 'public_user_id',
   fullscreen: false,
   autosize: true,
-  custom_css_url: './view.css',
+  custom_css_url: './light.css',
+  loading_screen: {
+    backgroundColor: "#FFFFFF"
+  },
   overrides: {
     'mainSeriesProperties.minTick': "100/1",
     'paneProperties.background': "#FFFFFF",
@@ -30,6 +33,12 @@ var light = {
     'paneProperties.horzGridProperties.color': "#EDF1F4",
     'scalesProperties.textColor': "#C4D0D7",
     'scalesProperties.lineColor': "#EDF1F4",
+    'paneProperties.legendProperties.showLegend': false,
+    'paneProperties.legendProperties.showStudyArguments': false,
+    'paneProperties.legendProperties.showStudyTitles': false,
+    'paneProperties.legendProperties.showStudyValues': false,
+    'paneProperties.legendProperties.showSeriesTitle': false,
+    'paneProperties.legendProperties.showSeriesOHLC': false,
   },
   studies_overrides: { //布林柱状图颜色
     "volume.precision": 2,
@@ -59,7 +68,10 @@ var dark = {
   user_id: 'public_user_id',
   fullscreen: false,
   autosize: true,
-  custom_css_url: './view.css',
+  custom_css_url: './dark.css',
+  loading_screen: {
+    backgroundColor: "#1E2C3B"
+  },
   overrides: {
     'mainSeriesProperties.minTick': "100/1",
     'paneProperties.background': "#1E2C3B",
@@ -71,6 +83,12 @@ var dark = {
     'paneProperties.horzGridProperties.color': "#394D66",
     'scalesProperties.textColor': "#627180",
     'scalesProperties.lineColor': "#394D66",
+    'paneProperties.legendProperties.showLegend': false,
+    'paneProperties.legendProperties.showStudyArguments': false,
+    'paneProperties.legendProperties.showStudyTitles': false,
+    'paneProperties.legendProperties.showStudyValues': false,
+    'paneProperties.legendProperties.showSeriesTitle': false,
+    'paneProperties.legendProperties.showSeriesOHLC': false,
   },
   studies_overrides: { //布林柱状图颜色
     "volume.precision": 2,
