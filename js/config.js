@@ -44,6 +44,9 @@ var light = {
     "volume.precision": 2,
     "volume.volume.color.1": "#15CC89", //绿
     "volume.volume.color.0": "#FF5B7D",//红
+    "stochastic.hlines background.visible": false,
+    "Relative Strength Index.hlines background.visible": false,
+    "Williams %R.hlines background.visible": false,
   },
   time_frames: [],
 }
@@ -94,6 +97,9 @@ var dark = {
     "volume.precision": 2,
     "volume.volume.color.1": "#00ce7d", //绿
     "volume.volume.color.0": "#e55541",//红
+    "stochastic.hlines background.visible": false,
+    "Relative Strength Index.hlines background.visible": false,
+    "Williams %R.hlines background.visible": false,
   },
   time_frames: [],
 }
