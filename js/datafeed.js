@@ -63,7 +63,7 @@ var Datafeeds = (function () {
             has_intraday: true,
             has_daily: true,
             has_empty_bars: true,
-            has_no_volume: false,
+            has_no_volume: true,
             has_weekly_and_monthly: false,
             description: '',
             type: 'stock',

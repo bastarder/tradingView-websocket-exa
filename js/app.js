@@ -15,7 +15,7 @@ var waitInitTimer = null;
 
 window.onload = function(){
   pageInitFinish = true;
-  // startChart('10.0.2.116:8081');
+  // startChart('13.230.25.84:8081');
 }
 
 function startChart(baseUrl, symbol, language, resolution, theme, chartType){
@@ -56,6 +56,7 @@ function initChart(){
 
     widget = new TradingView.widget(config)
     widget.onChartReady(function(){
+      createStudy('volume', true);
       createStudyAuto('Moving Average', 'first');
       setChartType(_chartType);
       widget.chart().onDataLoaded().subscribe(null, function(){
@@ -82,23 +83,37 @@ function setLanguage(language){
 }
 
 function setResolution(interval){
-  _resolution = interval;
-  if(widget){
-    if(loading) return false;
+  if(!widget || loading){
+    return false;
+  }
+
+  var chartType = 1;
+  var resolution = interval;
+
+  if(interval == '1000001'){
+    chartType = 3;
+    resolution = '1';
+  }
+
+  _resolution = resolution;
+
+  if(widget.chart().resolution() != resolution){
     loading = true;
-    widget.chart().setResolution(_resolution, function(){
+    widget.chart().setResolution(String(resolution), () => {
+      console.log('Set Success!', String(resolution))
       loading = false;
+      widget.chart().setChartType(chartType);
     });
   }else{
-    initChart();
+    widget.chart().setChartType(chartType);
   }
-  return true;
 }
 
 function setChartType(chartType){
-  if(widget){
-    setResolution('1');
-    widget.chart().setChartType(Number(chartType));
+  if(chartType === '3'){
+    setResolution('1000001');
+  }else{
+    widget && widget.chart().setChartType(Number(chartType));
   }
 }
 

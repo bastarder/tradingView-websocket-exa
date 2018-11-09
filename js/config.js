@@ -97,9 +97,26 @@ var dark = {
     "volume.precision": 2,
     "volume.volume.color.1": "#00ce7d", //绿
     "volume.volume.color.0": "#e55541",//红
+
     "stochastic.hlines background.visible": false,
+    "stochastic.%D.color": "#FF5B7D",
+    "stochastic.%K.color": "#4D81F3",
+
     "Relative Strength Index.hlines background.visible": false,
+    "Relative Strength Index.Plot.color": "#E04DF3",
+
     "Williams %R.hlines background.visible": false,
+    "Williams %R.Plot.color": "#5E4DF3",
+
+    "Moving Average.Plot.color": "#4D81F3",
+
+    "Bollinger Bands.Median.color": "#FF5B7D",
+    "Bollinger Bands.Upper.color": "#4D81F3",
+    "Bollinger Bands.Lower.color": "#4D81F3",
+
+    "MACD.Histogram.color": "#FF5B7D",
+    "MACD.MACD.color": "#4D81F3",
+    "MACD.Signal.color": "#FF5B7D",
   },
   time_frames: [],
 }
