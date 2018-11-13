@@ -39,6 +39,7 @@ function handleTouchRange(){
 
 function startChart(baseUrl, symbol, language, resolution, theme, chartType){
   _baseUrl = baseUrl || _baseUrl;
+  _datafeedUrl = 'http://' + _baseUrl + '/v1';
   _symbol = symbol || _symbol;
   _language = language || _language;
   _resolution = resolution || _resolution;
