@@ -25,6 +25,8 @@ var light = {
   overrides: {
     'mainSeriesProperties.minTick': "100/1",
     'paneProperties.background': "#FFFFFF",
+    'paneProperties.bottomMargin': 25,
+    'paneProperties.topMargin': 5,
     'mainSeriesProperties.barStyle.upColor': "#15CC89", //蜡烛图颜色-绿
     'mainSeriesProperties.barStyle.downColor': "#FF5B7D",//蜡烛图颜色-红
     'mainSeriesProperties.candleStyle.wickUpColor': "#15CC89",
@@ -76,6 +78,8 @@ var dark = {
     backgroundColor: "#1E2C3B"
   },
   overrides: {
+    'paneProperties.bottomMargin': 25,
+    'paneProperties.topMargin': 5,
     'mainSeriesProperties.minTick': "100/1",
     'paneProperties.background': "#1E2C3B",
     'mainSeriesProperties.barStyle.upColor': "#15CC89", //蜡烛图颜色-绿

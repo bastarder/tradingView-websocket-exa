@@ -16,6 +16,25 @@ var waitInitTimer = null;
 window.onload = function(){
   pageInitFinish = true;
   // startChart('13.230.25.84:8081');
+  handleTouchRange();
+}
+
+function handleTouchRange(){
+  action();
+  setInterval(action, 1000);
+  function action(){
+    try {
+      var width = +window.frames[0].document.getElementsByClassName('chart-markup-table price-axis')[1].style.width.replace('px', '');
+    } catch (error) {
+      var width = 55;
+    }
+
+    try {
+      document.getElementById('disabled-touch-scale').style.width = width + 4 + 'px';
+    } catch (error) {
+
+    }
+  }
 }
 
 function startChart(baseUrl, symbol, language, resolution, theme, chartType){
@@ -121,7 +140,12 @@ function createStudy(){
   if(!widget || !widget.chart()){
     return false
   }
-  return widget.chart().createStudy.apply(widget.chart(), arguments)
+
+  var id = widget.chart().createStudy.apply(widget.chart(), arguments);
+
+  widget.chart().getStudyById(id).setUserEditEnabled(false);
+
+  return id;
 }
 
 function createStudyAuto(key, type){
