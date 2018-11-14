@@ -51,26 +51,37 @@ var Datafeeds = (function () {
         }); }, 0);
     };
     Datafeeds.prototype.resolveSymbol = function (trading_pair, onResolve, onError) {
-        setTimeout(function () { return onResolve({
-            name: trading_pair,
-            base_name: [trading_pair],
-            full_name: trading_pair,
-            timezone: 'Asia/Shanghai',
-            minmov: 1,
-            exchange: "",
-            listed_exchange: "",
-            session: '24x7',
-            has_intraday: true,
-            has_daily: true,
-            has_empty_bars: true,
-            has_no_volume: true,
-            has_weekly_and_monthly: false,
-            description: '',
-            type: 'stock',
-            supported_resolutions: ['1', '5', '15', '30', '60', '240', '1440', '10080', '43200'],
-            pricescale: 10000,
-            ticker: trading_pair,
-        }); }, 0);
+        this._send('/trading_pairs', {
+            pair: trading_pair ? trading_pair.toUpperCase() : ""
+        }, function (data) {
+            if (!data) {
+                onError("unknown_symbol");
+            }
+            else {
+                onResolve({
+                    name: trading_pair,
+                    base_name: [trading_pair],
+                    full_name: trading_pair,
+                    timezone: 'Asia/Shanghai',
+                    minmov: 1,
+                    exchange: "",
+                    listed_exchange: "",
+                    session: '24x7',
+                    has_intraday: true,
+                    has_daily: true,
+                    has_empty_bars: true,
+                    has_no_volume: true,
+                    has_weekly_and_monthly: false,
+                    description: '',
+                    type: 'stock',
+                    supported_resolutions: ['1', '5', '15', '30', '60', '240', '1440', '10080', '43200'],
+                    pricescale: Math.pow(10, parseInt(data.quote_decimal)),
+                    ticker: trading_pair,
+                });
+            }
+        }, function () {
+            onError("unknown_symbol");
+        });
     };
     Datafeeds.prototype.subscribeBars = function (symbolInfo, resolution, onTick, listenerGuid, onResetCacheNeededCallback) {
         this.onTick = onTick;
