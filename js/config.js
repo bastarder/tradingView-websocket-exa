@@ -1,4 +1,5 @@
 var light = {
+  timezone: "Asia/Shanghai",
   preset: "mobile",
   container_id: 'tv_chart_container',
   library_path: './charting_library/',
@@ -30,7 +31,7 @@ var light = {
     'mainSeriesProperties.barStyle.downColor': "#FF5B7D",//蜡烛图颜色-红
     'mainSeriesProperties.candleStyle.wickUpColor': "#15CC89",
     'mainSeriesProperties.candleStyle.wickDownColor': "#FF5B7D",
-    'paneProperties.vertGridProperties.color': "transparent",
+    'paneProperties.vertGridProperties.color': "RGBA(0,0,0,0)",
     'paneProperties.horzGridProperties.color': "#EDF1F4",
     'scalesProperties.textColor': "#C4D0D7",
     'scalesProperties.lineColor': "#EDF1F4",
@@ -53,6 +54,7 @@ var light = {
 }
 
 var dark = {
+  timezone: "Asia/Shanghai",
   preset: "mobile",
   container_id: 'tv_chart_container',
   library_path: './charting_library/',
@@ -84,7 +86,7 @@ var dark = {
     'mainSeriesProperties.barStyle.downColor': "#FF5B7D",//蜡烛图颜色-红
     'mainSeriesProperties.candleStyle.wickUpColor': "#15CC89",
     'mainSeriesProperties.candleStyle.wickDownColor': "#FF5B7D",
-    'paneProperties.vertGridProperties.color': "transparent",
+    'paneProperties.vertGridProperties.color': "RGBA(0,0,0,0)",
     'paneProperties.horzGridProperties.color': "#394D66",
     'scalesProperties.textColor': "#627180",
     'scalesProperties.lineColor': "#394D66",

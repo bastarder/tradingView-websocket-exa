@@ -82,6 +82,9 @@ function initChart(){
       widget.chart().onDataLoaded().subscribe(null, function(){
         loading = false;
       })
+      widget.subscribe('edit_object_dialog', function(){
+        widget.closePopupsAndDialogs();
+      })
     });
   }, 200)
 }
@@ -179,6 +182,13 @@ function getAllStudies(){
     return false
   }
   return widget.chart().getAllStudies()
+}
+
+function action(id){
+  if(!widget || !widget.chart()){
+    return false
+  }
+  return widget.chart().executeActionById(id || 'chartProperties')
 }
 
 window.onerror = function(err) {
