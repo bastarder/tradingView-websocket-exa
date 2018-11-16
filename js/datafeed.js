@@ -91,6 +91,75 @@ var Datafeeds = (function () {
     };
     Datafeeds.prototype.getBars = function (symbolInfo, resolution, rangeStartDate, rangeEndDate, onResult, onError, isFirstCall) {
         var _this = this;
+        // close: 7508
+        // high: 7513.46
+        // isBarClosed: true
+        // isLastBar: false
+        // low: 6993
+        // open: 6993
+        // time: 1532044800000
+        // volume: 3.27
+
+        // D = 1
+        // lastTime
+
+        // TimeDay = lastTimeDay
+
+        // kindle = {}
+
+        // if(time >= lastTimeDay ){
+        //   merge(kindle, list[time])
+        // }else{
+        //   TimeDay = lastTimeDay - 86400000
+        //   Data.push(kindle)
+        //   kindle = list[time];
+        // }
+
+        if(isFirstCall){
+            if(resolution == '10080'){
+                _this.cacheBars.splice(_this.cacheBars.length - 4, 1)
+                var lastKindle = _this.cacheBars[_this.cacheBars.length - 1];
+                var lastTime = lastKindle.time;
+                var timerDay = lastTime - 1000 * 60 * 60 * 8;
+                var bars = [];
+                var kindle = JSON.parse(JSON.stringify(lastKindle));
+
+                for(let i = _this.cacheBars.length - 2; i > 0; i--){
+                    var _kindle = JSON.parse(JSON.stringify(_this.cacheBars[i]));
+                    console.log('_kindle:', _kindle)
+                    if(_kindle.time >= timerDay){
+                        kindle.open = _kindle.open;
+                        if(kindle.high < _kindle.high){
+                            kindle.high = _kindle.high;
+                        }
+                        if(kindle.low > _kindle.low){
+                            kindle.low = _kindle.low;
+                        }
+                        kindle.time = timerDay;
+                        console.log(kindle.time)
+                    }else{
+                        timerDay = timerDay - 86400000 * 7;
+                        bars.push(kindle);
+                        kindle = _kindle;
+                    }
+                }
+
+                setTimeout(() => {
+                    console.log(bars);
+                    onResult(bars.reverse(), {noData: !bars.length})
+                }, 0);
+                return ;
+            }
+        }else{
+            if(resolution == '10080'){
+                setTimeout(() => {
+                    onResult([], {noData: true})
+                }, 0);
+                return ;
+            }
+        }
+
+
         if (!isFirstCall) {
             try {
                 this._send('/get_bars', {

@@ -5,7 +5,7 @@ var widget = null;
 var _symbol = 'BTC_USDT';
 var _language = 'en';
 var _datafeedUrl = 'http://' + _baseUrl + '/v1';
-var _resolution = '5';
+var _resolution = '1440';
 var _theme = 'dark';
 var _chartType = '1';
 var initTimer = null;
@@ -15,7 +15,7 @@ var waitInitTimer = null;
 
 window.onload = function(){
   pageInitFinish = true;
-  // startChart('13.230.25.84:8081');
+  startChart('13.230.25.84:8081');
   handleTouchRange();
 }
 
@@ -194,3 +194,25 @@ function action(id){
 window.onerror = function(err) {
   console.warn('Error:', err)
 }
+
+
+// D = 1
+// lastTime
+
+// TimeDay = lastTimeDay
+
+// kindle = {}
+
+// if(time >= lastTimeDay ){
+//   merge(kindle, list[time])
+// }else{
+//   TimeDay = lastTimeDay - 86400000
+//   Data.push(kindle)
+//   kindle = list[time];
+// }
+
+
+
+
+
+
