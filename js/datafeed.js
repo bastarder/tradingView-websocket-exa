@@ -117,7 +117,7 @@ var Datafeeds = (function () {
 
         if(isFirstCall){
             if(resolution == '10080'){
-                _this.cacheBars.splice(_this.cacheBars.length - 4, 1)
+                _this.cacheBars.splice(_this.cacheBars.length - 4, 4)
                 var lastKindle = _this.cacheBars[_this.cacheBars.length - 1];
                 var lastTime = lastKindle.time;
                 var timerDay = lastTime - 1000 * 60 * 60 * 8;
@@ -136,6 +136,7 @@ var Datafeeds = (function () {
                             kindle.low = _kindle.low;
                         }
                         kindle.time = timerDay;
+                        kindle.volume += _kindle.volume
                         console.log(kindle.time)
                     }else{
                         timerDay = timerDay - 86400000 * 7;
