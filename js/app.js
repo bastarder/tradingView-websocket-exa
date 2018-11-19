@@ -146,13 +146,12 @@ function createStudy(){
   }
 
   if(arguments[0] === 'Moving Average'){
-    // widget.chart().createStudy('Moving Average', true, false, [5], function(){}, {
-    //   'Plot.color': '#ffffff',
-    // })
-    widget.chart().createStudy('Moving Average', true, false, [5])
-    widget.chart().createStudy('Moving Average', true, false, [10])
-    widget.chart().createStudy('Moving Average', true, false, [30])
-    widget.chart().createStudy('Moving Average', true, false, [60])
+    // var colors = ['#222222', '#333333', '#ffffff', '#000000'];
+    [5, 10, 30, 60].forEach(function(range, index){
+      widget.chart().createStudy('Moving Average', false, false, [range], null, {
+        // 'Plot.color': colors[index],
+      })
+    })
     return '0'
   }
 
