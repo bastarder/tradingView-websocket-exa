@@ -145,6 +145,17 @@ function createStudy(){
     return false
   }
 
+  if(arguments[0] === 'Moving Average'){
+    // widget.chart().createStudy('Moving Average', true, false, [5], function(){}, {
+    //   'Plot.color': '#ffffff',
+    // })
+    widget.chart().createStudy('Moving Average', true, false, [5])
+    widget.chart().createStudy('Moving Average', true, false, [10])
+    widget.chart().createStudy('Moving Average', true, false, [30])
+    widget.chart().createStudy('Moving Average', true, false, [60])
+    return '0'
+  }
+
   var id = widget.chart().createStudy.apply(widget.chart(), arguments);
 
   widget.chart().getStudyById(id).setUserEditEnabled(false);
