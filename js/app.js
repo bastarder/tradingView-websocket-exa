@@ -122,7 +122,7 @@ function setResolution(interval){
 
   if(widget.chart().resolution() != resolution){
     loading = true;
-    widget.chart().setResolution(String(resolution), () => {
+    widget.chart().setResolution(String(resolution), function() {
       console.log('Set Success!', String(resolution))
       loading = false;
       widget.chart().setChartType(chartType);
