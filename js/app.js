@@ -15,14 +15,14 @@ var waitInitTimer = null;
 
 window.onload = function(){
   pageInitFinish = true;
-  // startChart('13.230.25.84:8081');
+  // startChart('excalibur-websocket.blockvalley.io:88');
   handleTouchRange();
 }
 
 function handleTouchRange(){
-  action();
-  setInterval(action, 1000);
-  function action(){
+  handle();
+  setInterval(handle, 1000);
+  function handle(){
     try {
       var width = +window.frames[0].document.getElementsByClassName('chart-markup-table price-axis')[1].style.width.replace('px', '');
     } catch (error) {
@@ -199,6 +199,10 @@ function action(id){
     return false
   }
   return widget.chart().executeActionById(id || 'chartProperties')
+}
+
+function resetChart(){
+  action('chartReset');
 }
 
 window.onerror = function(err) {
