@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+  },
+  "files": [
+      "datafeed-api.d.ts",
+      "datafeed.ts",
+      "socket.ts"
+  ]
+}

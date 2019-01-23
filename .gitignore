@@ -1,1 +1,3 @@
-build/
+build/*.ts
+build/*.js
+build/*.css
