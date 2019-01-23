@@ -1,3 +1,5 @@
+// darkbg 161E2A
+
 var light = {
   timezone: "Asia/Shanghai",
   preset: "mobile",
@@ -76,12 +78,12 @@ var dark = {
   autosize: true,
   custom_css_url: './dark.css',
   loading_screen: {
-    backgroundColor: "#1E2C3B"
+    backgroundColor: "#161E2A"
   },
   overrides: {
     'paneProperties.bottomMargin': 25,
     'paneProperties.topMargin': 5,
-    'paneProperties.background': "#1E2C3B",
+    'paneProperties.background': "#161E2A",
     'mainSeriesProperties.barStyle.upColor': "#15CC89", //蜡烛图颜色-绿
     'mainSeriesProperties.barStyle.downColor': "#FF5B7D",//蜡烛图颜色-红
     'mainSeriesProperties.candleStyle.wickUpColor': "#15CC89",
