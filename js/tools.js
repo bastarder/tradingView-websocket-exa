@@ -1,0 +1,13 @@
+var getTimeZone = function() {
+  var timeZoneList = [{"key":"Etc/UTC","timezone":null},{"key":"exchange","timezone":null},{"key":"Pacific/Honolulu","timezone":"UTC-10"},{"key":"America/Los_Angeles","timezone":"UTC-8"},{"key":"America/Vancouver","timezone":"UTC-8"},{"key":"America/Phoenix","timezone":"UTC-7"},{"key":"America/Chicago","timezone":"UTC-6"},{"key":"America/Mexico_City","timezone":"UTC-6"},{"key":"America/El_Salvador","timezone":"UTC-6"},{"key":"America/Bogota","timezone":"UTC-5"},{"key":"America/New_York","timezone":"UTC-5"},{"key":"America/Toronto","timezone":"UTC-5"},{"key":"America/Caracas","timezone":"UTC-4"},{"key":"America/Argentina/Buenos_Aires","timezone":"UTC-3"},{"key":"America/Sao_Paulo","timezone":"UTC-2"},{"key":"Europe/London","timezone":"UTC"},{"key":"Europe/Belgrade","timezone":"UTC+1"},{"key":"Europe/Berlin","timezone":"UTC+1"},{"key":"Europe/Luxembourg","timezone":"UTC+1"},{"key":"Europe/Madrid","timezone":"UTC+1"},{"key":"Europe/Paris","timezone":"UTC+1"},{"key":"Europe/Rome","timezone":"UTC+1"},{"key":"Europe/Warsaw","timezone":"UTC+1"},{"key":"Europe/Zurich","timezone":"UTC+1"},{"key":"Europe/Athens","timezone":"UTC+2"},{"key":"Africa/Cairo","timezone":"UTC+2"},{"key":"Asia/Jerusalem","timezone":"UTC+2"},{"key":"Europe/Istanbul","timezone":"UTC+3"},{"key":"Asia/Kuwait","timezone":"UTC+3"},{"key":"Europe/Moscow","timezone":"UTC+3"},{"key":"Asia/Qatar","timezone":"UTC+3"},{"key":"Asia/Riyadh","timezone":"UTC+3"},{"key":"Asia/Tehran","timezone":"UTC+3:30"},{"key":"Asia/Dubai","timezone":"UTC+4"},{"key":"Asia/Muscat","timezone":"UTC+4"},{"key":"Asia/Ashkhabad","timezone":"UTC+5"},{"key":"Asia/Kolkata","timezone":"UTC+5:30"},{"key":"Asia/Almaty","timezone":"UTC+6"},{"key":"Asia/Bangkok","timezone":"UTC+7"},{"key":"Asia/Chongqing","timezone":"UTC+8"},{"key":"Asia/Hong_Kong","timezone":"UTC+8"},{"key":"Asia/Shanghai","timezone":"UTC+8"},{"key":"Asia/Singapore","timezone":"UTC+8"},{"key":"Asia/Taipei","timezone":"UTC+8"},{"key":"Asia/Seoul","timezone":"UTC+9"},{"key":"Asia/Tokyo","timezone":"UTC+9"},{"key":"Australia/Brisbane","timezone":"UTC+10"},{"key":"Australia/Adelaide","timezone":"UTC+10:30"},{"key":"Australia/Sydney","timezone":"UTC+11"},{"key":"Pacific/Auckland","timezone":"UTC+13"},{"key":"Pacific/Fakaofo","timezone":"UTC+13"},{"key":"Pacific/Chatham","timezone":"UTC+13:45"}];
+  var localTimeZone = new Date().getTimezoneOffset() / 60;
+  localTimeZone = 'UTC' + (localTimeZone > 0 ? '-' : '+') + Math.abs(localTimeZone);
+
+  var offset = new Date().getTimezoneOffset() % 60;
+  if(offset > 0) {
+    localTimeZone = localTimeZone + ':' + offset;
+  }
+
+  var item = timeZoneList.find(function(i){ return i.timezone === localTimeZone}) || timeZoneList[0];
+  return item.key;
+}

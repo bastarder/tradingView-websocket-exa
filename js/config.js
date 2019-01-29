@@ -1,7 +1,7 @@
 // darkbg 161E2A
 
 var light = {
-  timezone: "Asia/Shanghai",
+  timezone: getTimeZone(),
   preset: "mobile",
   container_id: 'tv_chart_container',
   library_path: './charting_library/',
@@ -56,7 +56,7 @@ var light = {
 }
 
 var dark = {
-  timezone: "Asia/Shanghai",
+  timezone: getTimeZone(),
   preset: "mobile",
   container_id: 'tv_chart_container',
   library_path: './charting_library/',

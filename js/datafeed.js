@@ -62,7 +62,7 @@ var Datafeeds = (function () {
                     name: trading_pair,
                     base_name: [trading_pair],
                     full_name: trading_pair,
-                    timezone: 'Asia/Shanghai',
+                    timezone: getTimeZone(),
                     minmov: 1,
                     exchange: "",
                     listed_exchange: "",
