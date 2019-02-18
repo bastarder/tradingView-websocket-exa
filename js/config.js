@@ -7,7 +7,7 @@ var light = {
   library_path: './charting_library/',
   disabled_features: [
     'header_widget',
-    'widget_logo',
+    // 'widget_logo',
     'use_localstorage_for_settings',
     'left_toolbar',
     'display_market_status',
@@ -62,7 +62,7 @@ var dark = {
   library_path: './charting_library/',
   disabled_features: [
     'header_widget',
-    'widget_logo',
+    // 'widget_logo',
     'use_localstorage_for_settings',
     'left_toolbar',
     'display_market_status',
